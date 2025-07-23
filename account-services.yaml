@@ -5,19 +5,352 @@ meta:
   created: 1753183576398
   modified: 1753183576398
   description: ""
+collection:
+  - name: accounts
+    meta:
+      id: fld_b35475d141774f6f8077804c5c248ea7
+      created: 1753185240231
+      modified: 1753187235931
+      sortKey: -1753185240231
+      description: Operations related to account management (retrieval and balance updates)
+    children:
+      - url: "{{ _.base_url }}/accounts"
+        name: List all accounts
+        meta:
+          id: req_237034e2c9a448e08cb0fc91250cc4ec
+          created: 1753185240248
+          modified: 1753185240248
+          isPrivate: false
+          description: Returns a list of all accounts with basic details.
+          sortKey: -1753185240248
+        method: GET
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/accounts"
+        name: Create a new account
+        meta:
+          id: req_8cac65f1bdea48818d24de99f4a89f67
+          created: 1753185240249
+          modified: 1753186703462
+          isPrivate: false
+          description: Creates a new account with an initial balance. The account ID is
+            automatically generated.
+          sortKey: -1753185240249
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "type": "savings",
+              "initial_balance": 5000
+            }
+        headers:
+          - name: Content-Type
+            disabled: false
+            value: application/json
+        scripts:
+          afterResponse: "// Extract account_id from the response and store it in the
+            environment
+
+            let data = insomnia.response.json();
+
+            insomnia.environment.set(\"accountId\", data.account_id);
+
+
+            console.log(`Response status: ${insomnia.response.code}`);
+
+            if (insomnia.response.code !== 201){
+
+            \tconsole.log(\"Warning: Unexpected status code\");
+
+            }
+
+            \ "
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/accounts/{{ _.accountId }}"
+        name: Retrieve a single account
+        meta:
+          id: req_472c7ff14c5b4649a0a99044846b935c
+          created: 1753185240251
+          modified: 1753187009879
+          isPrivate: false
+          description: Returns details for the specified account including current balance.
+          sortKey: -1753185240251
+        method: GET
+        parameters:
+          - id: pair_112365c722964de39d170b949ef8961e
+            name: ""
+            value: ""
+            description: ""
+            disabled: false
+          - id: pair_594fb627d9df415d9283e192772aa709
+            name: ""
+            value: ""
+            description: ""
+            disabled: false
+          - id: pair_2e1cee59707f43e4bcfbd0b20bd841c1
+            name: ""
+            value: ""
+            description: ""
+            disabled: false
+        scripts:
+          preRequest: >-
+            if (!insomnia.environment.get("accountId")) {
+              const host = insomnia.environment.get("host");
+              const scheme = insomnia.environment.get("scheme");
+              const baseUrl = `${scheme}://${host}`;
+             
+              const createAccountRequest = {
+                url: `${baseUrl}/accounts`,
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: {
+                  mode: 'raw',
+                  raw: JSON.stringify({
+                    type: 'savings',
+                    initial_balance: 5000.00,
+                  }),
+                },
+              };
+             
+              const response = await new Promise((resolve, reject) => {
+                insomnia.sendRequest(createAccountRequest, (err, resp) => {
+                  if (err != null) reject(err);
+                  else resolve(resp);
+                });
+              });
+             
+              if (response.code !== 201) {
+                throw new Error(`Account creation failed. Status code: ${response.code}`);
+              }
+             
+              const responseBody = JSON.parse(response.body.toString());
+              insomnia.environment.set('accountId', responseBody.account_id);
+            }
+          afterResponse: ""
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/accounts/{{ _.accountId }}/debit"
+        name: Debit an account
+        meta:
+          id: req_234a50cc521d4eaaa8585f5452c83f10
+          created: 1753185240252
+          modified: 1753187003293
+          isPrivate: false
+          description: Decreases the account's balance by the specified amount.
+          sortKey: -1753185240252
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "amount": 100
+            }
+        headers:
+          - name: Content-Type
+            disabled: false
+            value: application/json
+        scripts:
+          preRequest: >-
+            if (!insomnia.environment.get("accountId")) {
+              const host = insomnia.environment.get("host");
+              const scheme = insomnia.environment.get("scheme");
+              const baseUrl = `${scheme}://${host}`;
+             
+              const createAccountRequest = {
+                url: `${baseUrl}/accounts`,
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: {
+                  mode: 'raw',
+                  raw: JSON.stringify({
+                    type: 'savings',
+                    initial_balance: 5000.00,
+                  }),
+                },
+              };
+             
+              const response = await new Promise((resolve, reject) => {
+                insomnia.sendRequest(createAccountRequest, (err, resp) => {
+                  if (err != null) reject(err);
+                  else resolve(resp);
+                });
+              });
+             
+              if (response.code !== 201) {
+                throw new Error(`Account creation failed. Status code: ${response.code}`);
+              }
+             
+              const responseBody = JSON.parse(response.body.toString());
+              insomnia.environment.set('accountId', responseBody.account_id);
+            }
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/accounts/{{ _.accountId }}/credit"
+        name: Credit an account
+        meta:
+          id: req_f6486ec651d74e2da3de83ad4cb41c8e
+          created: 1753185240254
+          modified: 1753186991619
+          isPrivate: false
+          description: Increases the account's balance by the specified amount.
+          sortKey: -1753185240254
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "amount": 100
+            }
+        headers:
+          - name: Content-Type
+            disabled: false
+            value: application/json
+        scripts:
+          preRequest: >-
+            if (!insomnia.environment.get("accountId")) {
+              const host = insomnia.environment.get("host");
+              const scheme = insomnia.environment.get("scheme");
+              const baseUrl = `${scheme}://${host}`;
+             
+              const createAccountRequest = {
+                url: `${baseUrl}/accounts`,
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: {
+                  mode: 'raw',
+                  raw: JSON.stringify({
+                    type: 'savings',
+                    initial_balance: 5000.00,
+                  }),
+                },
+              };
+             
+              const response = await new Promise((resolve, reject) => {
+                insomnia.sendRequest(createAccountRequest, (err, resp) => {
+                  if (err != null) reject(err);
+                  else resolve(resp);
+                });
+              });
+             
+              if (response.code !== 201) {
+                throw new Error(`Account creation failed. Status code: ${response.code}`);
+              }
+             
+              const responseBody = JSON.parse(response.body.toString());
+              insomnia.environment.set('accountId', responseBody.account_id);
+            }
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: health
+    meta:
+      id: fld_79a7bd7f843548a6a1ea9b2ff647e06e
+      created: 1753185240237
+      modified: 1753185240237
+      sortKey: -1753185240237
+      description: Health check endpoints for monitoring service status
+    children:
+      - url: "{{ _.base_url }}/health"
+        name: Health check endpoint
+        meta:
+          id: req_dfc6213b025e44b7a1900616790ef340
+          created: 1753185240240
+          modified: 1753185240240
+          isPrivate: false
+          description: Returns the API's health status
+          sortKey: -1753185240240
+        method: GET
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/health"
+        name: Health check endpoint (HEAD)
+        meta:
+          id: req_c43cfcc2c8534ffcb02f216b5f2cd4bb
+          created: 1753185240246
+          modified: 1753185240246
+          isPrivate: false
+          description: Returns the API's health status without body
+          sortKey: -1753185240246
+        method: HEAD
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
 cookieJar:
   name: Default Jar
   meta:
     id: jar_311e6847a7f51b361ae996cbf9d0aedf20a34a72
     created: 1753183576435
-    modified: 1753183576435
+    modified: 1753187235915
 environments:
   name: Base Environment
   meta:
     id: env_311e6847a7f51b361ae996cbf9d0aedf20a34a72
     created: 1753183576429
-    modified: 1753183576429
+    modified: 1753187235929
     isPrivate: false
+  data:
+    base_url: "{{ _.scheme }}://{{ _.host }}{{ _.base_path }}"
+  subEnvironments:
+    - name: OpenAPI env kong-1b683354d5euvprhl.kongcloud.dev
+      meta:
+        id: env_09c954c392454d38bb3df04d97232b49
+        created: 1753185240229
+        modified: 1753245684027
+        isPrivate: false
+        sortKey: 1753185240229
+      data:
+        scheme: https
+        host: kong-1b683354d5euvprhl.kongcloud.dev
+        base_url: "{{ _.scheme }}://{{ _.host }}"
+        accountId: f204a81d-9649-4f72-b42c-179ae63d23f8
 spec:
   contents:
     openapi: 3.0.3
@@ -470,4 +803,80 @@ spec:
   meta:
     id: spc_dce79bf3b9964f4db1e21c304f73a77f
     created: 1753183576420
-    modified: 1753184545261
+    modified: 1753244298291
+testSuites:
+  - name: Account-API test suite
+    meta:
+      id: uts_5d38785e6e17446b86c1aedb3281da4a
+      created: 1753245992685
+      modified: 1753246014259
+      sortKey: -1753245992685
+    tests:
+      - name: Returns 201
+        meta:
+          id: ut_b47e28ad42904c589df074ca68a1b87d
+          created: 1753246137846
+          modified: 1753246160039
+          sortKey: -1753246137846
+        requestId: req_8cac65f1bdea48818d24de99f4a89f67
+        code: "const response = await
+          insomnia.send();expect(response.status).to.equal(201);const account =
+          JSON.parse(response.data);expect(account).to.have.property('account_i\
+          d').that.is.a('string');expect(account).to.have.property('type').that\
+          .is.a('string');expect(account).to.have.property('balance').that.is.a\
+          ('number');
+
+          \ "
+      - name: Single account Returns 200
+        meta:
+          id: ut_bc4c0eb30ebe4475b1fbd1722272f9d3
+          created: 1753246173437
+          modified: 1753247125660
+          sortKey: -1753246173437
+        requestId: req_472c7ff14c5b4649a0a99044846b935c
+        code: const response = await
+          insomnia.send();expect(response.status).to.equal(200);const account =
+          JSON.parse(response.data);expect(account).to.have.property('account_id').that.is.a('string');
+      - name: Credit Account
+        meta:
+          id: ut_d69a1a91b4ba4534a0c0ccc27bf7006a
+          created: 1753246693685
+          modified: 1753246711988
+          sortKey: -1753246693685
+        requestId: req_f6486ec651d74e2da3de83ad4cb41c8e
+        code: const response = await
+          insomnia.send();expect(response.status).to.equal(200);const account =
+          JSON.parse(response.data);expect(account).to.have.property('balance').that.is.a('number');
+      - name: Health Check
+        meta:
+          id: ut_d442793e08694e108a35978d61cd5acc
+          created: 1753246721888
+          modified: 1753246742460
+          sortKey: -1753246721888
+        requestId: req_dfc6213b025e44b7a1900616790ef340
+        code: const response = await
+          insomnia.send();expect(response.status).to.equal(200);const body =
+          response.data;expect(body).to.be.a('string');expect(body.toLowerCase()).to.include('accounts
+          api');
+      - name: "list all accounts "
+        meta:
+          id: ut_5340cb0b04e14c57929c7cc45d8a0ce7
+          created: 1753246790979
+          modified: 1753246810580
+          sortKey: -1753246790979
+        requestId: req_237034e2c9a448e08cb0fc91250cc4ec
+        code: const response = await
+          insomnia.send();expect(response.status).to.equal(200);const accounts =
+          JSON.parse(response.data);expect(accounts).to.be.an('array');if
+          (accounts.length > 0) {const account =
+          accounts[0];expect(account).to.have.property('account_id');}
+      - name: Debit
+        meta:
+          id: ut_dd3f2be8526846bd8e025f1bd73758ee
+          created: 1753246966397
+          modified: 1753246981685
+          sortKey: -1753246966397
+        requestId: req_234a50cc521d4eaaa8585f5452c83f10
+        code: const response = await
+          insomnia.send();expect(response.status).to.equal(200);const account =
+          JSON.parse(response.data);expect(account).to.have.property('balance').that.is.a('number');
