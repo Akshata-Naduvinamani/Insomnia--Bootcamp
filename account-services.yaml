@@ -24,6 +24,9 @@ collection:
           description: Returns a list of all accounts with basic details.
           sortKey: -1753185240248
         method: GET
+        scripts:
+          preRequest: ""
+          afterResponse: ""
         settings:
           renderRequestBody: true
           encodeUrl: true
@@ -52,9 +55,9 @@ collection:
             }
         headers:
           - name: Content-Type
-            disabled: false
             value: application/json
         scripts:
+          preRequest: ""
           afterResponse: "// Extract account_id from the response and store it in the
             environment
 
@@ -91,21 +94,18 @@ collection:
           sortKey: -1753185240251
         method: GET
         parameters:
-          - id: pair_112365c722964de39d170b949ef8961e
-            name: ""
+          - name: ""
             value: ""
-            description: ""
             disabled: false
-          - id: pair_594fb627d9df415d9283e192772aa709
-            name: ""
+            id: pair_112365c722964de39d170b949ef8961e
+          - name: ""
             value: ""
-            description: ""
             disabled: false
-          - id: pair_2e1cee59707f43e4bcfbd0b20bd841c1
-            name: ""
+            id: pair_594fb627d9df415d9283e192772aa709
+          - name: ""
             value: ""
-            description: ""
             disabled: false
+            id: pair_2e1cee59707f43e4bcfbd0b20bd841c1
         scripts:
           preRequest: >-
             if (!insomnia.environment.get("accountId")) {
@@ -169,7 +169,6 @@ collection:
             }
         headers:
           - name: Content-Type
-            disabled: false
             value: application/json
         scripts:
           preRequest: >-
@@ -207,6 +206,7 @@ collection:
               const responseBody = JSON.parse(response.body.toString());
               insomnia.environment.set('accountId', responseBody.account_id);
             }
+          afterResponse: ""
         settings:
           renderRequestBody: true
           encodeUrl: true
@@ -233,7 +233,6 @@ collection:
             }
         headers:
           - name: Content-Type
-            disabled: false
             value: application/json
         scripts:
           preRequest: >-
@@ -271,6 +270,7 @@ collection:
               const responseBody = JSON.parse(response.body.toString());
               insomnia.environment.set('accountId', responseBody.account_id);
             }
+          afterResponse: ""
         settings:
           renderRequestBody: true
           encodeUrl: true
@@ -279,6 +279,9 @@ collection:
             send: true
             store: true
           rebuildPath: true
+    scripts:
+      afterResponse: ""
+      preRequest: ""
   - name: health
     meta:
       id: fld_79a7bd7f843548a6a1ea9b2ff647e06e
@@ -297,6 +300,9 @@ collection:
           description: Returns the API's health status
           sortKey: -1753185240240
         method: GET
+        scripts:
+          preRequest: ""
+          afterResponse: ""
         settings:
           renderRequestBody: true
           encodeUrl: true
@@ -315,6 +321,9 @@ collection:
           description: Returns the API's health status without body
           sortKey: -1753185240246
         method: HEAD
+        scripts:
+          preRequest: ""
+          afterResponse: ""
         settings:
           renderRequestBody: true
           encodeUrl: true
@@ -323,6 +332,9 @@ collection:
             send: true
             store: true
           rebuildPath: true
+    scripts:
+      afterResponse: ""
+      preRequest: ""
 cookieJar:
   name: Default Jar
   meta:
