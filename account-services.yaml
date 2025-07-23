@@ -369,7 +369,7 @@ spec:
     info:
       title: Accounts API
       version: 1.0.0
-      description: This API manages  account information and balances.
+      description: This API manages account  information and balances.
       contact:
         email: example@test.com
     servers:
@@ -377,7 +377,7 @@ spec:
         description: Local development server
     tags:
       - name: accounts
-        description: Operations related to account management (retrieval and balance
+        description: Operations  related to  account management (retrieval and balance
           updates)
       - name: health
         description: Health check endpoints for monitoring service status
@@ -815,7 +815,7 @@ spec:
   meta:
     id: spc_dce79bf3b9964f4db1e21c304f73a77f
     created: 1753183576420
-    modified: 1753247898202
+    modified: 1753252189209
 testSuites:
   - name: Account-API test suite
     meta:
