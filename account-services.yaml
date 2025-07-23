@@ -24,7 +24,7 @@ spec:
     info:
       title: Accounts API
       version: 1.0.0
-      description: This API manages account information and balances.
+      description: This API manages account  information and balances.
       contact:
         email: example@test.com
     servers:
@@ -470,4 +470,4 @@ spec:
   meta:
     id: spc_dce79bf3b9964f4db1e21c304f73a77f
     created: 1753183576420
-    modified: 1753184545261
+    modified: 1753252127679
